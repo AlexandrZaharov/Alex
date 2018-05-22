@@ -152,52 +152,32 @@ class Player:
         AIR1 = 10001
         AIR2 = 10002
 
-        left = False
-        right = False
-        up = False
-
-        MOVE_SPEED = 0.6
-        GRAVITY = 0.4
-        JUMP_POWER = 12
-        LIMIT_SPEED = 40
-
-
-        if left:
-
-            # Изменение self.xvel для более быстрого набора скорости.
-            if player1.vspeed.x == 0:
-                player1.vspeed.x = -5
-
-            # Основное изменение скорости.
-                player1.vspeed.x -= MOVE_SPEED
-
-            # Создание лимитирующей скорости (иначе при большом разгоне герой может вылететь за пределы уровня).
-            if abs(player1.vspeed.x) > LIMIT_SPEED:
-                player1.vspeed.x += MOVE_SPEED
-            # Ослабление движения по инерции.
-            if player1.vspeed.x > 15:
-                player1.vspeed.x = 15
-
-        if right:
-            if player1.vspeed.x == 0:
-                player1.vspeed.x = 5
-                player1.vspeed.x += MOVE_SPEED
-            if abs(player1.vspeed.x) > LIMIT_SPEED:
-                player1.vspeed.x -= MOVE_SPEED
-            if player1.vspeed.x < -15:
-                player1.vspeed.x = -15
-
-
-        # Контролируемое ликвидирование инерции.
-        if not (left or right):
+        #ПРОПИСЫВАЮ ДВИЖЕНИЕ ИГРОКОВ, НО ПОЧЕМУ-ТО ВЫПОЛНЯЕТСЯ ТОЛЬКО ДВИЖЕНИЕ ВЛЕВО, ПРИЧЁМ ЕСЛИ ПОМЕНЯТЬ ПОРЯДОК,
+        #ТО БУДЕТ ВЫПОЛНЯТЬСЯ ТОЛЬКО ДВИЖЕНИЕ ВПРАВО
+        #C ДВИЖЕНИЕМ ВВЕРХ ОСОБАЯ ЛАЖА КОНЕЧНО, НО ЭТО ПОКА ЛАДНО
+        #ХОТЬ БЫ С ДВИЖЕНИЕМ ВПРАВО-ВЛЕВО РАЗОБРАТЬСЯ...
+        
+        if pygame.key.get_pressed()[pygame.K_RIGHT] and player1.vcoord.x < 400:
+            player1.vspeed.x += 100
+        else:
+            player1.vspeed.x = 0
+        if pygame.key.get_pressed()[pygame.K_LEFT] and player1.vcoord.x > 80:
+            player1.vspeed.x -= 100
+        else:
             player1.vspeed.x = 0
 
-        # Выполнение прыжка.
-        if up:
-            if player1.onGround:
-                player1.vspeed.y = -JUMP_POWER
+        if pygame.key.get_pressed()[pygame.K_UP] and player1.vcoord.y >= 520:
+            if player1.state == GROUND:
+                player1.state = AIR1
+                player1.vspeed.y -= 100
+            else:
+                player1.vspeed.y += 100
+            if player1.state == AIR1:
+                player1.state = AIR2
+                player1.vspeed.y -= 2
+            else:
+                player2.vspeed.y += 100
 
-        #ПРОПИСЫВАЮ ДВИЖЕНИЕ ОДНОГО ИЗ ИГРОКОВ, НО ПОЧЕМУ-ТО ВЫПОЛНЯЕТСЯ ТОЛЬКО ДВИЖЕНИЕ ВЛЕВО
 
         if pygame.key.get_pressed()[pygame.K_d] and player2.vcoord.x < 920:
             player2.vspeed.x += 100
@@ -243,23 +223,6 @@ while True:
     for player in [player1, player2]:
         player.update_players()
         player.render_players(screen)
-    for e in pygame.event.get():
-
-        if e.type == pygame.KEYDOWN:
-            if e.key == pygame.K_LEFT:
-                left = True
-            if e.key == pygame.K_RIGHT:
-                right = True
-            if e.key == pygame.K_UP:
-                up = True
-
-        if e.type == pygame.KEYUP:
-            if e.key == pygame.K_LEFT:
-                left = False
-            if e.key == pygame.K_RIGHT:
-                right = False
-            if e.key == pygame.K_UP:
-                up = False
 
     pygame.font.init()
     myfont = pygame.font.SysFont('Comic Sans MS', 30)
