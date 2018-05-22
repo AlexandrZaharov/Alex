@@ -153,6 +153,8 @@ class Player:
         GROUND = 10000
         AIR1 = 10001
         AIR2 = 10002
+        
+        #ЗДЕСЬ ПЫТАЮСЬ ДВИГАТЬ ИГРОКОВ
 
         for player in [player1, player2]:
             if left:
@@ -182,6 +184,8 @@ right = False
 while True:
     dt = clock.tick(50) / 1000.0
 
+    #А ВОТ ЗДЕСЬ НЕПОСРЕДСТВЕННО ПРОВЕРЯЮ СОСТОЯНИЕ КНОПОК. ЧТО-ТО ИДЁТ НЕ ТАК...
+    
     for event in pygame.event.get():
 
         if event.type == pygame.QUIT:
